@@ -1,5 +1,3 @@
-// Determine the host at runtime so the frontend works regardless of where
-// the stack is deployed (e.g. when running via Docker Compose).
 const HOST = window.location.hostname;
 const USER_API = `http://${HOST}:4000/user`;
 const TODO_API = `http://${HOST}:4001/api/todo`;
