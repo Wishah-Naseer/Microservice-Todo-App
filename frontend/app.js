@@ -1,7 +1,9 @@
+// API configuration - adjust ports based on your setup
 const HOST = window.location.hostname;
 const USER_API = `http://${HOST}:4000/user`;
 const TODO_API = `http://${HOST}:4001/api/todo`;
 
+// Register a new user account
 async function registerUser(email, password) {
   const res = await fetch(`${USER_API}/register`, {
     method: 'POST',
@@ -15,6 +17,7 @@ async function registerUser(email, password) {
   return true;
 }
 
+// Authenticate user and store JWT token
 async function loginUser(email, password) {
   const res = await fetch(`${USER_API}/login`, {
     method: 'POST',
@@ -34,21 +37,25 @@ async function loginUser(email, password) {
   throw new Error(data?.message || 'Login failed');
 }
 
+// Get stored authentication token
 function getToken() {
   return localStorage.getItem('token');
 }
 
+// Redirect to login if no token found
 function requireAuth() {
   if (!getToken()) {
     window.location.href = 'login.html';
   }
 }
 
+// Clear token and redirect to login
 function logout() {
   localStorage.removeItem('token');
   window.location.href = 'login.html';
 }
 
+// Fetch all todos for the authenticated user
 async function fetchTodos() {
   const res = await fetch(TODO_API, {
     headers: { Authorization: `Bearer ${getToken()}` }
@@ -58,6 +65,7 @@ async function fetchTodos() {
   return data.data || [];
 }
 
+// Create a new todo
 async function addTodo(content) {
   const res = await fetch(TODO_API, {
     method: 'POST',
@@ -72,6 +80,7 @@ async function addTodo(content) {
   return data.data;
 }
 
+// Update an existing todo
 async function updateTodo(id, content) {
   const res = await fetch(`${TODO_API}/${id}`, {
     method: 'PUT',
@@ -86,6 +95,7 @@ async function updateTodo(id, content) {
   return data.data;
 }
 
+// Delete a todo
 async function deleteTodo(id) {
   const res = await fetch(`${TODO_API}/${id}`, {
     method: 'DELETE',

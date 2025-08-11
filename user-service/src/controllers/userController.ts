@@ -5,6 +5,7 @@ import { HttpStatus } from '../utils';
 import { ValidateBody } from '../decorators';
 
 export class UserController {
+  // Register a new user account
   @ValidateBody(CreateUserDto)
   async register(req: Request, res: Response) {
     const dto = req.body as CreateUserDto;
@@ -15,6 +16,7 @@ export class UserController {
     });
   }
 
+  // Authenticate user and return JWT token
   @ValidateBody(CreateUserDto)
   async login(req: Request, res: Response) {
     const dto = req.body as CreateUserDto;
@@ -25,6 +27,7 @@ export class UserController {
     });
   }
 
+  // Get user details by ID
   async getById(req: Request, res: Response) {
     const user = await userService.findById(req.params.id);
     return res.success({ data: { id: user.id, email: user.email, createdAt: user.createdAt } });

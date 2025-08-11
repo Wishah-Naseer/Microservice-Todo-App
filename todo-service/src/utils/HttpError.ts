@@ -1,3 +1,4 @@
+// Custom error class for HTTP errors with status codes
 export class HttpError extends Error {
   public readonly statusCode: number;
   constructor(message: string, statusCode: number) {

@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # User Database
+  # User Database - PostgreSQL instance for user data
   user-db:
     image: postgres:15
     container_name: user-db
@@ -14,7 +14,7 @@ services:
     networks:
       - app-net
 
-  # User Service
+  # User Service - Handles user authentication and management
   user-service:
     build: ./user-service
     container_name: user-service
@@ -27,7 +27,7 @@ services:
     networks:
       - app-net
 
-  # Todo Database
+  # Todo Database - PostgreSQL instance for todo data
   todo-db:
     image: postgres:15
     container_name: todo-db
@@ -40,7 +40,7 @@ services:
     networks:
       - app-net
 
-  # Todo Service
+  # Todo Service - Handles todo CRUD operations (depends on user service)
   todo-service:
     build: ./todo-service
     container_name: todo-service
@@ -57,7 +57,7 @@ services:
     networks:
       - app-net
 
-  # Frontend
+  # Frontend - Web interface for the todo application
   frontend:
     build: ./frontend
     container_name: frontend
@@ -69,10 +69,12 @@ services:
     networks:
       - app-net
 
+# Persistent data volumes for databases
 volumes:
   user-db-data:
   todo-db-data:
 
+# Network for inter-service communication
 networks:
   app-net:
     driver: bridge

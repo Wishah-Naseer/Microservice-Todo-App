@@ -6,17 +6,20 @@ import { todoService } from '../services';
 import { AuthRequest } from '../middleware';
 
 export class TodoController {
+  // Create a new todo for the authenticated user
   @ValidateBody(CreateTodoDto)
   async create(req: AuthRequest, res: Response) {
     const todo = await todoService.create(req.userId!, req.body);
     return res.success(todo, HttpStatus.CREATED);
   }
 
+  // Get all todos for the authenticated user
   async list(req: AuthRequest, res: Response) {
     const todos = await todoService.list(req.userId!);
     return res.success(todos);
   }
 
+  // Update an existing todo (only if owned by user)
   @ValidateBody(UpdateTodoDto)
   async update(req: AuthRequest, res: Response) {
     const todo = await todoService.update(
@@ -25,6 +28,7 @@ export class TodoController {
     return res.success(todo);
   }
 
+  // Delete a todo (only if owned by user)
   async remove(req: AuthRequest, res: Response) {
     await todoService.remove(req.userId!, req.params.id);
     return res.success(null, HttpStatus.NO_CONTENT);

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
+// User entity - represents a user account
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')

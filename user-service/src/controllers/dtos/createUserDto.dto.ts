@@ -1,5 +1,6 @@
 import { IsEmail, IsString, Length } from 'class-validator';
 
+// Data transfer object for user registration and login
 export class CreateUserDto {
     @IsEmail({}, { message: 'Email must be a valid email address' })
     email!: string;

@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { User } from './entities/user';
 
+// Database connection configuration for TypeORM
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: process.env.DB_HOST,

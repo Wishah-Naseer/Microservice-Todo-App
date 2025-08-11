@@ -20,6 +20,7 @@ export class UserService {
     private readonly userRepository: Repository<User>;
 
     constructor() {
+        // Get TypeORM repository for User entity
         this.userRepository = AppDataSource.getRepository(User);
     }
 
@@ -30,11 +31,13 @@ export class UserService {
     async register(input: RegisterInput): Promise<User> {
         const { email, password } = input;
 
+        // Check if user already exists
         const existing = await this.userRepository.findOneBy({ email });
         if (existing) {
             throw new HttpError('Email already in use', HttpStatus.CONFLICT);
         }
 
+        // Hash password and create user
         const passwordHash = await bcrypt.hash(password, 12);
         const user = this.userRepository.create({ email, passwordHash });
         return this.userRepository.save(user);
@@ -47,16 +50,19 @@ export class UserService {
     async login(input: LoginInput): Promise<string> {
         const { email, password } = input;
 
+        // Find user by email
         const user = await this.userRepository.findOneBy({ email });
         if (!user) {
             throw new HttpError('Invalid credentials', HttpStatus.UNAUTHORIZED);
         }
 
+        // Verify password
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) {
             throw new HttpError('Invalid credentials', HttpStatus.UNAUTHORIZED);
         }
 
+        // Generate JWT token
         const secret = process.env.JWT_SECRET;
         if (!secret) {
             throw new Error('JWT_SECRET not configured');
@@ -69,6 +75,7 @@ export class UserService {
         );
     }
 
+    // Find user by ID
     async findById(id: string) {
         const user = await this.userRepository.findOneBy({ id });
         if (!user) {
