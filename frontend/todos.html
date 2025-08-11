@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Todos</title>
+</head>
+<body>
+  <h1>Your Todos</h1>
+  <button id="logoutBtn">Logout</button>
+  <form id="todoForm">
+    <input type="text" id="todoInput" placeholder="New todo" required />
+    <button type="submit">Add</button>
+  </form>
+  <ul id="todoList"></ul>
+  <script type="module">
+    import {
+      requireAuth,
+      fetchTodos,
+      addTodo,
+      updateTodo,
+      deleteTodo,
+      logout
+    } from './app.js';
+
+    requireAuth();
+
+    const list = document.getElementById('todoList');
+    const form = document.getElementById('todoForm');
+    document.getElementById('logoutBtn').onclick = () => logout();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await addTodo(document.getElementById('todoInput').value);
+        form.reset();
+        render();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    async function render() {
+      list.innerHTML = '';
+      try {
+        const todos = await fetchTodos();
+        todos.forEach((t) => {
+          const li = document.createElement('li');
+          const span = document.createElement('span');
+          span.textContent = t.content;
+          const editBtn = document.createElement('button');
+          editBtn.textContent = 'Edit';
+          editBtn.onclick = async () => {
+            const content = prompt('Edit todo', t.content);
+            if (content) {
+              try {
+                await updateTodo(t.id, content);
+                render();
+              } catch (err) {
+                alert(err.message);
+              }
+            }
+          };
+          const delBtn = document.createElement('button');
+          delBtn.textContent = 'Delete';
+          delBtn.onclick = async () => {
+            try {
+              await deleteTodo(t.id);
+              render();
+            } catch (err) {
+              alert(err.message);
+            }
+          };
+          li.appendChild(span);
+          li.appendChild(editBtn);
+          li.appendChild(delBtn);
+          list.appendChild(li);
+        });
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

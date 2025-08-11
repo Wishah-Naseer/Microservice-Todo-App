@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Todo Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4001
+security:
+  - bearerAuth: []
+paths:
+  /api/todo:
+    post:
+      summary: Create a new todo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTodo'
+      responses:
+        '201':
+          description: Todo created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+    get:
+      summary: List todos for the authenticated user
+      responses:
+        '200':
+          description: List of todos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoListResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /api/todo/{id}:
+    put:
+      summary: Update an existing todo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodo'
+      responses:
+        '200':
+          description: Updated todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    delete:
+      summary: Remove a todo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Todo removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateTodo:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+    UpdateTodo:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+    Todo:
+      type: object
+      required:
+        - id
+        - content
+        - userId
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        userId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+    TodoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/Todo'
+    TodoListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Todo'
+    EmptyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: "null"
+          nullable: true
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+        errors:
+          nullable: true
+  responses:
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

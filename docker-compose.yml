@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # User Database
+  user-db:
+    image: postgres:15
+    container_name: user-db
+    environment:
+      POSTGRES_DB:   users
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+  # User Service
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    env_file:
+      - ./user-service/.env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - user-db
+    networks:
+      - app-net
+
+  # Todo Database
+  todo-db:
+    image: postgres:15
+    container_name: todo-db
+    environment:
+      POSTGRES_DB:   todos
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: password
+    volumes:
+      - todo-db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+  # Todo Service
+  todo-service:
+    build: ./todo-service
+    container_name: todo-service
+    env_file:
+      - ./todo-service/.env
+    environment:
+      # Point your Todo Service at the User Service by its Compose hostname:
+      - USER_SERVICE_URL=http://user-service:4000
+    ports:
+      - "4001:4001"
+    depends_on:
+      - todo-db
+      - user-service
+    networks:
+      - app-net
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - user-service
+      - todo-service
+    networks:
+      - app-net
+
+volumes:
+  user-db-data:
+  todo-db-data:
+
+networks:
+  app-net:
+    driver: bridge
