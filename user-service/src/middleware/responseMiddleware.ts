@@ -4,11 +4,8 @@ import { sendSuccess, sendError, HttpStatus } from '../utils';
 declare global {
   namespace Express {
     interface Response {
-      //Send a 200 OK success envelope.
-      // success<T>(data: T, code?: HttpStatus): Response;
       success<T>(args: SuccessArgs<T>): Response;
 
-      // Send an error envelope. Defaults to 500.
       fail<E>(error: E | string, code?: HttpStatus): Response;
     }
   }
@@ -21,8 +18,6 @@ export function responseMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  // res.success = <T>(data: T, code: HttpStatus = HttpStatus.OK): Response =>
-  //   sendSuccess(res, data, code);
   res.success = <T>({ data, statusCode }: SuccessArgs<T>): Response =>
     sendSuccess(res, data, statusCode);
 

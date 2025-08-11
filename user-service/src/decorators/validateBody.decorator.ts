@@ -23,19 +23,15 @@ export function ValidateBody(dtoClass: new () => any): MethodDecorator {
             res: Response,
             next: NextFunction
         ): Promise<any> {
-            // Transform plain JSON into your DTO class
             const dtoObject = plainToInstance(dtoClass, req.body);
 
             try {
-                // Run class-validator checks
                 await validateOrReject(dtoObject, {
                     whitelist: true,
                     forbidNonWhitelisted: true,
                 });
-                // Replace body with the validated DTO
                 req.body = dtoObject;
             } catch (err) {
-                // If it's an array of ValidationError, format and return 400
                 if (Array.isArray(err)) {
                     const formatted = (err as ValidationError[]).map((e) => ({
                         property: e.property,
@@ -49,11 +45,9 @@ export function ValidateBody(dtoClass: new () => any): MethodDecorator {
                             errors: formatted,
                         });
                 }
-                // Otherwise, pass it along (e.g. HttpError or unexpected)
                 return next(err);
             }
 
-            // All good — invoke the original controller
             return originalMethod.call(this, req, res, next);
         };
 

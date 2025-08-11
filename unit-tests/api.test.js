@@ -16,7 +16,6 @@ const USER_SERVICE_URL = process.env.USER_SERVICE_URL || 'http://localhost:4000'
 const TODO_SERVICE_URL = process.env.TODO_SERVICE_URL || 'http://localhost:4001';
 
 describe('User Service', () => {
-  // variables shared between tests
   let testEmail;
   const password = 'TestPassword123!';
   let userId;
@@ -154,7 +153,6 @@ describe('Todo Service', () => {
     expect(response.status).toBe(200);
     expect(response.data.status).toBe('success');
     expect(Array.isArray(response.data.data)).toBe(true);
-    // Should contain at least the todo we just created
     const ids = response.data.data.map((t) => t.id);
     expect(ids).toContain(todoId);
   });

@@ -14,7 +14,6 @@ interface ErrorPayload {
 }
 
 
-//Sends a JSON success envelope with default 200 OK.
 export function sendSuccess<T>(
   res: Response,
   data: T,
@@ -24,7 +23,6 @@ export function sendSuccess<T>(
   return res.status(statusCode).json(payload);
 }
 
-//Sends a JSON error envelope. Defaults to 500 Internal Server Error.
 export function sendError(
   res: Response,
   message: string,

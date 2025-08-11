@@ -28,10 +28,5 @@ export class UserController {
   async getById(req: Request, res: Response) {
     const user = await userService.findById(req.params.id);
     return res.success({ data: { id: user.id, email: user.email, createdAt: user.createdAt } });
-    // return res.success({
-    //   id: user.id,
-    //   email: user.email,
-    //   createdAt: user.createdAt
-    // });
   }
 }
