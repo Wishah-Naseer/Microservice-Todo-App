@@ -31,7 +31,7 @@ Microservice-Todo-Application/
    docker compose up -d --build
    ```
 
-   The services are available at `http://localhost:4000` (User Service) and `http://localhost:4001` (Todo Service). The frontend can be accessed at `http://localhost:8080/login.html`.
+   The services are available at `http://localhost:4000` (User Service) and `http://localhost:4001` (Todo Service). The frontend can be accessed at `http://localhost:8081/login.html`.
 
 ## Running Locally
 
